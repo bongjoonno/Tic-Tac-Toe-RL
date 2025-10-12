@@ -8,6 +8,7 @@ board.display_board()
 
 # move functions
 
-board.move(0, 0, 'X')
-board.move(0, 0, 'X')
-print(board.available_boxes)
+board.move(0, 2, 'X')
+board.move(1, 1, 'X')
+board.move(1, 0, 'X')
+board.display_board()
