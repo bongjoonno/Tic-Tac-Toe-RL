@@ -18,6 +18,7 @@ class Board():
     def display_board(self):
         for row in self.board:
             print(row)
+        return
         
     def move(self, y, x, symbol):
         if (y, x) in self.available_boxes:
