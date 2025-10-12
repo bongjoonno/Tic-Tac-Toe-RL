@@ -6,7 +6,7 @@ from random_move import random_move
 board = Board()
 q_table = {}
 
-for _ in range(1_000_000):
+for _ in range(10_000_000):
     board, q_table = random_move(board, 'X', q_table)
     board, q_table = random_move(board, 'O', q_table)
 
