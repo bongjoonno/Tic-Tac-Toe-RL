@@ -24,7 +24,12 @@ class Board():
         if (y, x) in self.available_boxes:
             self.board[y][x] = symbol
             self.available_boxes.remove((y, x))
-            return self.check_win(symbol)
+            outcome = self.check_win(symbol)
+            
+            if outcome == 'No win...' and self.board_is_full():
+                outcome = 'Draw'
+            
+            return outcome
             
     
     def check_win(self, symbol):
@@ -38,6 +43,12 @@ class Board():
                     if self.board[slot3[0]][slot3[1]] == symbol:
                         return f'{symbol} WON!'
         return 'No win...'
+
+    def board_is_full(self):
+        for row in self.board:
+            if 0 in row:
+                return False
+        return True
             
                 
         
