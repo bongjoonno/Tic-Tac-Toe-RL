@@ -1,12 +1,11 @@
-board = [0, 0, 0]
+def modif_dict(dic, x):
+    dic[x] = 0
+    return dic
 
-if board[0] == board[1] == board[2]:
-    print('yes')
+dic = {}
+
+for i in range(100):
+    dic = modif_dict(dic, i)
     
-    
-
-[0, 0, 0],
-[0, 0, 0],
-[0, 0, 0]
-
-
+for i in range(100, 201):
+    dic = modif_dict(dic, i)

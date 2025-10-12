@@ -1,8 +1,8 @@
 class Board():
     def __init__(self):
-        self.board = [[0, 0, 0],
-                      [0, 0, 0],
-                      [0, 0, 0]]
+        self.board = [['0', '0', '0'],
+                      ['0', '0', '0'],
+                      ['0', '0', '0']]
         
         self.available_boxes = set((i, j) for i in range(3) for j in range(3))
 
@@ -15,6 +15,8 @@ class Board():
                                       [(0, 0), (1, 1), (2, 2)],
                                       [(0, 2), (1, 1), (2, 0)]]
         
+        self.last_move_player = 'None'
+        
     def display_board(self):
         for row in self.board:
             print(row)
@@ -23,6 +25,7 @@ class Board():
     def move(self, y, x, symbol):
         if (y, x) in self.available_boxes:
             self.board[y][x] = symbol
+            self.last_move_player = symbol
             self.available_boxes.remove((y, x))
             outcome = self.check_win(symbol)
             
@@ -31,6 +34,11 @@ class Board():
             
             return outcome
             
+    def board_is_full(self):
+        for row in self.board:
+            if '0' in row:
+                return False
+        return True
     
     def check_win(self, symbol):
         for winning_position in self.winning_position_pairs:
@@ -44,11 +52,10 @@ class Board():
                         return f'{symbol} WON!'
         return 'No win...'
 
-    def board_is_full(self):
+    def make_fen(self):
+        fen = []
         for row in self.board:
-            if 0 in row:
-                return False
-        return True
-            
-                
-        
+            for item in row:
+                fen.append(item)
+        fen.append(self.last_move_player)
+        return ''.join(fen)  
