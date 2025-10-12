@@ -1,14 +1,10 @@
 from tic_tac_toe_board import Board
+#q-table function system
 
 board = Board()
-
-board.display_board()
-
-
-
-# move functions
-
-board.move(0, 2, 'X')
-board.move(1, 1, 'X')
-board.move(1, 0, 'X')
-board.display_board()
+for _ in range(10):
+    random_move = choice()
+    outcome = board.move(0, 2, 'X')
+    
+    if outcome == 'X WON!':
+        board = Board()

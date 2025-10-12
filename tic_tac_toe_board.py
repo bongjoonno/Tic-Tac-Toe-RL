@@ -23,10 +23,7 @@ class Board():
         if (y, x) in self.available_boxes:
             self.board[y][x] = symbol
             self.available_boxes.remove((y, x))
-            win = self.check_win(symbol)
-            print(win)
-        else:
-            print('Invalid move')
+            return self.check_win(symbol)
             
     
     def check_win(self, symbol):
