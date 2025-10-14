@@ -7,7 +7,4 @@ def random_move(board: Board, symbol, q_table):
     outcome = board.move(y, x, symbol)
     q_table[board.make_fen()] = 0
     
-    if 'WON!' in outcome or 'Draw' in outcome:
-        board = Board()
-    
-    return board, q_table
+    return board, q_table, outcome
