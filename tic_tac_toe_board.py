@@ -1,5 +1,6 @@
 class Board():
-    def __init__(self):
+    def __init__(self, q_table = {}):
+        self.q_table = q_table
         self.board = [['0', '0', '0'],
                       ['0', '0', '0'],
                       ['0', '0', '0']]
@@ -19,6 +20,7 @@ class Board():
         
         self.rewards = {'X' : 0, 'O' : 0}
         self.opposite_symbol = {'X' : 'O', 'O' : 'X'}
+        self.last_move = 'None'
         
     def display_board(self):
         for row in self.board:
@@ -27,8 +29,11 @@ class Board():
         
     def move(self, y, x, symbol):
         if (y, x) in self.available_boxes:
-            self.board[y][x] = symbol
             self.last_move_player = symbol
+            self.last_move = str((y * 3) + (x + 1))
+            
+            self.update_q_table()
+            self.board[y][x] = symbol
             self.available_boxes.remove((y, x))
             outcome = self.check_win(symbol)
             
@@ -44,7 +49,10 @@ class Board():
                 
                 
             return outcome
-            
+    
+    def update_q_table(self):
+        self.q_table[self.make_fen()] = 0
+        
     def board_is_full(self):
         for row in self.board:
             if '0' in row:
@@ -68,5 +76,7 @@ class Board():
         for row in self.board:
             for item in row:
                 fen.append(item)
+        
         fen.append(self.last_move_player)
+        fen.append(self.last_move)
         return ''.join(fen)  
