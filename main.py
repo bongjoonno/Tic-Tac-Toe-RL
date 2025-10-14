@@ -30,11 +30,4 @@ for _ in range(10_000_000):
 
 print(len(q_table))
 
-#for pos, val in q_table.items():
-    #print(pos, val)
-    
-
-#add reward for winning
-# add reward for losing
-# add reward for draw
-# add reward for each move 
+# add action to FEN
