@@ -17,10 +17,13 @@ class Board():
         
         self.last_move_player = 'None'
         
+        self.rewards = {'X' : 0, 'O' : 0}
+        self.opposite_symbol = {'X' : 'O', 'O' : 'X'}
+        
     def display_board(self):
         for row in self.board:
             print(row)
-        return
+        print('\n')
         
     def move(self, y, x, symbol):
         if (y, x) in self.available_boxes:
@@ -29,9 +32,17 @@ class Board():
             self.available_boxes.remove((y, x))
             outcome = self.check_win(symbol)
             
-            if outcome == 'No win...' and self.board_is_full():
-                outcome = 'Draw'
+            if outcome == 'No win...':
+                if self.board_is_full():
+                    outcome = 'Draw'
+                else:
+                    self.rewards[symbol] -= 0.1
             
+            else:
+                self.rewards[symbol] += 10
+                self.rewards[self.opposite_symbol[symbol]] -= 10
+                
+                
             return outcome
             
     def board_is_full(self):

@@ -8,9 +8,12 @@ q_table = {}
 
 for _ in range(10_000_000):
     board, q_table = random_move(board, 'X', q_table)
-    sleep(1)
+    board.display_board()
+    sleep(2)
     board, q_table = random_move(board, 'O', q_table)
-    sleep(1)
+    board.display_board()
+    sleep(2)
+    print(f'{board.rewards}\n')
 
 print(len(q_table))
 
