@@ -16,12 +16,12 @@ class Board():
                                       [(0, 0), (1, 1), (2, 2)],
                                       [(0, 2), (1, 1), (2, 0)]]
         
-        self.last_move_player = 'None'
+        self.last_move_player = 'X'
         
         self.rewards = {'X' : 0, 'O' : 0}
         self.opposite_symbol = {'X' : 'O', 'O' : 'X'}
         self.last_move = 'None'
-        self.spots_left = 9
+        self.spots_left = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
         
     def display_board(self):
         for row in self.board:
@@ -30,9 +30,9 @@ class Board():
         
     def move(self, y, x, symbol):
         if (y, x) in self.available_boxes:
-            self.spots_left -= 1
             self.last_move_player = symbol
             self.last_move = str((y * 3) + (x + 1))
+            self.spots_left.remove(self.last_move)
             
             self.update_q_table()
             self.board[y][x] = symbol
@@ -40,7 +40,7 @@ class Board():
             outcome = self.check_win(symbol)
             
             if outcome == 'No win...':
-                if self.spots_left == 0:
+                if self.spots_left == []:
                     outcome = 'Draw'
                 else:
                     self.rewards[symbol] -= 0.1
@@ -53,7 +53,7 @@ class Board():
             return outcome
     
     def update_q_table(self):
-        self.q_table[self.make_fen()] = 0
+        self.q_table[self.make_fen(self.last_move)] = 0
     
     def check_win(self, symbol):
         for winning_position in self.winning_position_pairs:
@@ -67,12 +67,20 @@ class Board():
                         return f'{symbol} WON!'
         return 'No win...'
 
-    def make_fen(self):
+    def make_fen(self, move):
         fen = []
         for row in self.board:
             for item in row:
                 fen.append(item)
         
         fen.append(self.last_move_player)
-        fen.append(self.last_move)
+        fen.append(move)
         return ''.join(fen)  
+    
+    def calculate_possible_moves_fen(self):
+        possible_moves_fens = []
+        
+        for spot in self.spots_left:
+            possible_moves_fens.append(self.make_fen(spot))
+        
+        return possible_moves_fens
