@@ -6,7 +6,7 @@ from random_move import random_move
 q_table = {}
 board = Board(q_table = q_table)
 
-for _ in range(100_000):
+for _ in range(1_000_000):
     board, q_table, outcome = random_move(board, 'X', q_table)
     
     if 'WON!' in outcome or 'Draw' in outcome:
