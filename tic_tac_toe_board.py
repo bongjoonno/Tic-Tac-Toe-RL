@@ -21,6 +21,7 @@ class Board():
         self.rewards = {'X' : 0, 'O' : 0}
         self.opposite_symbol = {'X' : 'O', 'O' : 'X'}
         self.last_move = 'None'
+        self.spots_left = 9
         
     def display_board(self):
         for row in self.board:
@@ -29,6 +30,7 @@ class Board():
         
     def move(self, y, x, symbol):
         if (y, x) in self.available_boxes:
+            self.spots_left -= 1
             self.last_move_player = symbol
             self.last_move = str((y * 3) + (x + 1))
             
@@ -38,7 +40,7 @@ class Board():
             outcome = self.check_win(symbol)
             
             if outcome == 'No win...':
-                if self.board_is_full():
+                if self.spots_left == 0:
                     outcome = 'Draw'
                 else:
                     self.rewards[symbol] -= 0.1
@@ -52,12 +54,6 @@ class Board():
     
     def update_q_table(self):
         self.q_table[self.make_fen()] = 0
-        
-    def board_is_full(self):
-        for row in self.board:
-            if '0' in row:
-                return False
-        return True
     
     def check_win(self, symbol):
         for winning_position in self.winning_position_pairs:
