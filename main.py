@@ -1,27 +1,31 @@
 from imports import choice, sleep
 from tic_tac_toe_board import Board
-from random_move import random_move
+from constants import EPSILON
+
 #q-table function system
 
 q_table = {}
-board = Board(q_table = q_table)
 
-for _ in range(1_000_000):
-    board, q_table, outcome = random_move(board, 'X', q_table)
+epsilon = 1
+
+board = Board(q_table = q_table, epsilon = epsilon)
+
+epochs = 500_000
+
+for _ in range(epochs // 2):
+    outcome = board.move('X')
     
     if 'WON!' in outcome or 'Draw' in outcome:
-        board = Board(q_table = q_table)
+        board = Board(q_table = q_table, epsilon = epsilon)
+        epsilon = max(0, epsilon ** 0.999)
         continue
-        
-    board, q_table, outcome = random_move(board, 'O', q_table)
+    
+    outcome = board.move('O')
     
     if 'WON!' in outcome or 'Draw' in outcome:
-        board = Board(q_table = q_table)
+        board = Board(q_table = q_table, epsilon = epsilon)
+        epsilon = max(0, epsilon ** 0.999)
+        
     
-    #board.display_board()
-    #print(board.spots_left)
     
 print(len(q_table))
-print(q_table)
-
-# make policy function
