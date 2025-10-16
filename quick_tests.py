@@ -1,3 +1,3 @@
-lst = [1, 2, 3, 4, 5, 6]
+dic = {'a' : 2, 'b' : 2}
 
-print(lst[3:6])
+print(max(dic, key = dic.get))

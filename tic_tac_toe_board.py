@@ -1,8 +1,10 @@
-from imports import choice
+from imports import choice, choices
 
 class Board():
-    def __init__(self, q_table = {}):
+    def __init__(self, q_table = {}, epsilon = 1):
         self.q_table = q_table
+        self.epsilon = epsilon
+        
         self.board = [['0', '0', '0'],
                       ['0', '0', '0'],
                       ['0', '0', '0']]
@@ -22,6 +24,8 @@ class Board():
         self.opposite_symbol = {'X' : 'O', 'O' : 'X'}
         self.last_move = 'None'
         self.spots_left = list(range(0, 9))
+        self.possible_moves = []
+        self.possible_moves_fen_dict = {}
         
     def display_board(self):
         for row in self.board:
@@ -31,8 +35,9 @@ class Board():
     def move(self, symbol):
         self.last_move_player = symbol
         
-        move = self.policy()
+        move = self.get_next_move()
         
+        self.spots_left.remove(move)
         self.update_q_table(move)
         
         y, x = (move // 3, move % 3)
@@ -87,16 +92,33 @@ class Board():
         
         return possible_moves_fens
 
-    def policy(self):
-        possible_moves = self.calculate_possible_moves_fen()
-        possible_moves_fen_dict = {move_fen: self.q_table.get(move_fen, 0) for move_fen in possible_moves}
+    def get_next_move(self):
+        self.possible_moves = self.calculate_possible_moves_fen()
+        self.possible_moves_fen_dict = {move_fen: self.q_table.get(move_fen, 0) for move_fen in self.possible_moves}
         
-        if len(possible_moves) == 1:
-            move = possible_moves[0]
+        if len(self.possible_moves) == 1:
+            move = self.possible_moves[0]
 
-        elif not all(possible_moves_fen_dict.values()):
+        elif not all(self.possible_moves_fen_dict.values()):
             move = choice(self.spots_left)
         
-        self.spots_left.remove(move)
+        else:
+            self.policy()
+
         
         return move
+
+    def policy(self):
+        random_move_prob = 1 / len(self.possible_moves)
+        max_q_score_move = max(self.possible_moves_fen_dict, key = self.possible_moves_fen_dict.get)
+        
+        probs = []
+        
+        for move in self.possible_moves_fen_dict.keys():
+            if move == max_q_score_move:
+                probs.append(random_move_prob + self.epsilon)
+            else:
+                probs.append(random_move_prob)
+                
+        
+        return choices(self.possible_moves, weights = probs)        
