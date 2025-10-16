@@ -22,7 +22,6 @@ class Board():
         
         self.rewards = {'X' : 0, 'O' : 0}
         self.opposite_symbol = {'X' : 'O', 'O' : 'X'}
-        self.last_move = 'None'
         self.spots_left = list(range(0, 9))
         self.possible_moves = []
         self.possible_moves_fen_dict = {}
@@ -100,7 +99,7 @@ class Board():
         self.possible_moves_update()
         
         if len(self.possible_moves) == 1:
-            return self.possible_moves[0]
+            return self.spots_left[0]
 
         elif not all(self.possible_moves_fen_dict.values()):
             return choice(self.spots_left)

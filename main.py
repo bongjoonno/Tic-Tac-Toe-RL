@@ -6,23 +6,26 @@ from constants import EPSILON
 
 q_table = {}
 
-epsilon = EPSILON
+epsilon = 1
 
 board = Board(q_table = q_table, epsilon = epsilon)
 
-for _ in range(1_000_000):
+epochs = 500_000
+
+for _ in range(epochs // 2):
     outcome = board.move('X')
     
     if 'WON!' in outcome or 'Draw' in outcome:
         board = Board(q_table = q_table, epsilon = epsilon)
+        epsilon = max(0, epsilon ** 0.999)
         continue
     
-    outcome = board.move('X')
+    outcome = board.move('O')
     
     if 'WON!' in outcome or 'Draw' in outcome:
         board = Board(q_table = q_table, epsilon = epsilon)
+        epsilon = max(0, epsilon ** 0.999)
         
-    epsilon = max(0, epsilon*0.999)
     
     
 print(len(q_table))
