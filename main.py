@@ -29,4 +29,3 @@ for _ in range(epochs // 2):
     
     
 print(len(q_table))
-print(q_table)
