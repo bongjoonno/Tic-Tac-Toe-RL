@@ -86,7 +86,7 @@ class Board():
 
     def policy(self):
         possible_moves = self.calculate_possible_moves_fen()
-        possible_moves_fen_dict = {move_fen: self.q_table[move_fen] for move_fen in possible_moves}
+        possible_moves_fen_dict = {move_fen: self.q_table.get(move_fen, 0) for move_fen in possible_moves}
         return possible_moves_fen_dict
         
         """
