@@ -1,10 +1,10 @@
 from imports import choice, choices
 
 class Board():
-    def __init__(self, q_table = {}, epsilon = 1):
+    def __init__(self, q_table = {}, epsilon = 0.75):
         self.q_table = q_table
         self.epsilon = epsilon
-        
+        self.max_q_score_move_greedy_prob = 1 - self.epsilon
         self.board = [['0', '0', '0'],
                       ['0', '0', '0'],
                       ['0', '0', '0']]
@@ -93,32 +93,30 @@ class Board():
         return possible_moves_fens
 
     def get_next_move(self):
+        self.possible_moves_update()
+        
+        if len(self.possible_moves) == 1:
+            return self.possible_moves[0]
+
+        elif not all(self.possible_moves_fen_dict.values()):
+            return choice(self.spots_left)
+        else:
+            return self.policy()
+
+    def possible_moves_update(self):
         self.possible_moves = self.calculate_possible_moves_fen()
         self.possible_moves_fen_dict = {move_fen: self.q_table.get(move_fen, 0) for move_fen in self.possible_moves}
         
-        if len(self.possible_moves) == 1:
-            move = self.possible_moves[0]
-
-        elif not all(self.possible_moves_fen_dict.values()):
-            move = choice(self.spots_left)
-        
-        else:
-            self.policy()
-
-        
-        return move
-
     def policy(self):
-        random_move_prob = 1 / len(self.possible_moves)
+        random_move_prob = self.epsilon / len(self.possible_moves)
         max_q_score_move = max(self.possible_moves_fen_dict, key = self.possible_moves_fen_dict.get)
         
         probs = []
         
         for move in self.possible_moves_fen_dict.keys():
             if move == max_q_score_move:
-                probs.append(random_move_prob + self.epsilon)
+                probs.append(random_move_prob + self.max_q_score_move_greedy_prob)
             else:
                 probs.append(random_move_prob)
                 
-        
-        return choices(self.possible_moves, weights = probs)        
+        return choices(self.spots_left, weights = probs).pop()  

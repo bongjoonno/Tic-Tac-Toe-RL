@@ -1,3 +1,5 @@
-dic = {'a' : 2, 'b' : 2}
+from imports import choices
 
-print(max(dic, key = dic.get))
+nums = [1, 2]
+
+print(choices(nums, weights = [0.5, 0.6]))
