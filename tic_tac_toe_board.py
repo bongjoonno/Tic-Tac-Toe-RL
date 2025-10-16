@@ -6,8 +6,6 @@ class Board():
         self.board = [['0', '0', '0'],
                       ['0', '0', '0'],
                       ['0', '0', '0']]
-        
-        self.available_boxes = set((i, j) for i in range(3) for j in range(3))
 
         self.winning_position_pairs = [[(0, 0), (0, 1), (0, 2)],
                                       [(1, 0), (1, 1), (1, 2)],
@@ -23,7 +21,7 @@ class Board():
         self.rewards = {'X' : 0, 'O' : 0}
         self.opposite_symbol = {'X' : 'O', 'O' : 'X'}
         self.last_move = 'None'
-        self.spots_left = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+        self.spots_left = list(range(0, 9))
         
     def display_board(self):
         for row in self.board:
@@ -33,7 +31,12 @@ class Board():
     def move(self, symbol):
         self.last_move_player = symbol
         
-        self.policy()
+        move = self.policy()
+        
+        self.update_q_table(move)
+        
+        y, x = (move // 3, move % 3)
+        self.board[y][x] = symbol
         
         
         outcome = self.check_win(symbol)
@@ -51,8 +54,8 @@ class Board():
             
         return outcome
     
-    def update_q_table(self):
-        self.q_table[self.make_fen(self.last_move)] = 0
+    def update_q_table(self, move):
+        self.q_table[self.make_fen(move)] = 0
     
     def check_win(self, symbol):
         for winning_position in self.winning_position_pairs:
@@ -73,7 +76,7 @@ class Board():
                 fen.append(item)
         
         fen.append(self.last_move_player)
-        fen.append(move)
+        fen.append(str(move))
         return ''.join(fen)  
     
     def calculate_possible_moves_fen(self):
@@ -87,19 +90,13 @@ class Board():
     def policy(self):
         possible_moves = self.calculate_possible_moves_fen()
         possible_moves_fen_dict = {move_fen: self.q_table.get(move_fen, 0) for move_fen in possible_moves}
-        return possible_moves_fen_dict
         
-        """
-        self.random_pos = choice(self.spots_left)
+        if len(possible_moves) == 1:
+            move = possible_moves[0]
+
+        elif not all(possible_moves_fen_dict.values()):
+            move = choice(self.spots_left)
         
+        self.spots_left.remove(move)
         
-        
-        
-        self.last_move = str((y * 3) + (x + 1))
-        self.spots_left.remove(self.last_move)
-        
-        self.update_q_table()
-        self.board[y][x] = symbol
-        self.available_boxes.remove((y, x))
-        
-        """
+        return move
