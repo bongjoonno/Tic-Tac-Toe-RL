@@ -1,3 +1,5 @@
+from imports import choice
+
 class Board():
     def __init__(self, q_table = {}):
         self.q_table = q_table
@@ -28,29 +30,26 @@ class Board():
             print(row)
         print('\n')
         
-    def move(self, y, x, symbol):
-        if (y, x) in self.available_boxes:
-            self.last_move_player = symbol
-            self.last_move = str((y * 3) + (x + 1))
-            self.spots_left.remove(self.last_move)
-            
-            self.update_q_table()
-            self.board[y][x] = symbol
-            self.available_boxes.remove((y, x))
-            outcome = self.check_win(symbol)
-            
-            if outcome == 'No win...':
-                if self.spots_left == []:
-                    outcome = 'Draw'
-                else:
-                    self.rewards[symbol] -= 0.1
-            
+    def move(self, symbol):
+        self.last_move_player = symbol
+        
+        self.policy()
+        
+        
+        outcome = self.check_win(symbol)
+        
+        if outcome == 'No win...':
+            if self.spots_left == []:
+                outcome = 'Draw'
             else:
-                self.rewards[symbol] += 10
-                self.rewards[self.opposite_symbol[symbol]] -= 10
-                
-                
-            return outcome
+                self.rewards[symbol] -= 0.1
+        
+        else:
+            self.rewards[symbol] += 10
+            self.rewards[self.opposite_symbol[symbol]] -= 10
+            
+            
+        return outcome
     
     def update_q_table(self):
         self.q_table[self.make_fen(self.last_move)] = 0
@@ -84,3 +83,23 @@ class Board():
             possible_moves_fens.append(self.make_fen(spot))
         
         return possible_moves_fens
+
+    def policy(self):
+        possible_moves = self.calculate_possible_moves_fen()
+        possible_moves_fen_dict = {move_fen: self.q_table[move_fen] for move_fen in possible_moves}
+        return possible_moves_fen_dict
+        
+        """
+        self.random_pos = choice(self.spots_left)
+        
+        
+        
+        
+        self.last_move = str((y * 3) + (x + 1))
+        self.spots_left.remove(self.last_move)
+        
+        self.update_q_table()
+        self.board[y][x] = symbol
+        self.available_boxes.remove((y, x))
+        
+        """
