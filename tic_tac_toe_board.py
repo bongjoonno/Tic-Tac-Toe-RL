@@ -37,12 +37,8 @@ class Board():
         
         move = self.get_next_move()
         
-        self.spots_left.remove(move)
-        self.update_q_table(move)
-        
-        y, x = (move // 3, move % 3)
-        self.board[y][x] = symbol
-        
+        self.update_stuff(move)
+        self.update_board(move, symbol)
         
         outcome = self.check_win(symbol)
         
@@ -58,6 +54,14 @@ class Board():
             
             
         return outcome
+
+    def update_stuff(self, move):
+        self.spots_left.remove(move)
+        self.update_q_table(move)
+
+    def update_board(self, move, symbol):
+        y, x = (move // 3, move % 3)
+        self.board[y][x] = symbol
     
     def update_q_table(self, move):
         self.q_table[self.make_fen(move)] = 0
