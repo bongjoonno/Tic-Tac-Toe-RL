@@ -13,8 +13,7 @@ board = Board(q_table = q_table, epsilon = epsilon)
 
 epochs = 100_000
 
-for _ in range(epochs // 2):
-    outcome = board.move('X', random = False)
+for i in range(epochs):
     q_learning(board)
     
     if 'WON!' in outcome or 'Draw' in outcome:
