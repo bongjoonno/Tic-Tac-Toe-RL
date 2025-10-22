@@ -1,5 +1,5 @@
 from tic_tac_toe_board import Board
-from constants import GAMMA, ALPHA
+from constants import ALPHA, GAMMA
 
 def q_learning(board: Board):
     outcome = board.move('X', random = False)
