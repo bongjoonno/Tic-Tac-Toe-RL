@@ -31,10 +31,10 @@ class Board():
             print(row)
         print('\n')
         
-    def move(self, symbol):
+    def move(self, symbol, random = False):
         self.last_move_player = symbol
-        
-        move = self.get_next_move()
+
+        move = self.get_next_move(random)
         
         self.update_stuff(move)
         self.update_board(move, symbol)
@@ -95,13 +95,13 @@ class Board():
         
         return possible_moves_fens
 
-    def get_next_move(self):
+    def get_next_move(self, random):
         self.possible_moves_update()
         
         if len(self.possible_moves) == 1:
             return self.spots_left[0]
 
-        elif not all(self.possible_moves_fen_dict.values()):
+        elif not all(self.possible_moves_fen_dict.values()) or random:
             return choice(self.spots_left)
         else:
             return self.policy()
