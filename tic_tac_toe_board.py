@@ -1,15 +1,7 @@
 from imports import choice, choices
 
-class Board():
-    def __init__(self, q_table = {}, epsilon = 0.75):
-        self.q_table = q_table
-        self.epsilon = epsilon
-        self.max_q_score_move_greedy_prob = 1 - self.epsilon
-        self.board = [['0', '0', '0'],
-                      ['0', '0', '0'],
-                      ['0', '0', '0']]
-
-        self.winning_position_pairs = [[(0, 0), (0, 1), (0, 2)],
+class Board:
+    winning_position_pairs = [[(0, 0), (0, 1), (0, 2)],
                                       [(1, 0), (1, 1), (1, 2)],
                                       [(2, 0), (2, 1), (2, 2)],
                                       [(0, 0), (1, 0), (2, 0)],
@@ -17,6 +9,14 @@ class Board():
                                       [(0, 2), (1, 2), (2, 2)],
                                       [(0, 0), (1, 1), (2, 2)],
                                       [(0, 2), (1, 1), (2, 0)]]
+    
+    def __init__(self, q_table = {}, epsilon = 0.75):
+        self.q_table = q_table
+        self.epsilon = epsilon
+        self.max_q_score_move_greedy_prob = 1 - self.epsilon
+        self.board = [['0', '0', '0'],
+                      ['0', '0', '0'],
+                      ['0', '0', '0']]
         
         self.last_move_player = 'X'
         
@@ -70,7 +70,7 @@ class Board():
         self.q_table[self.last_move_fen] = self.q_table.get(self.last_move_fen, 0)
     
     def check_win(self, symbol):
-        for winning_position in self.winning_position_pairs:
+        for winning_position in Board.winning_position_pairs:
             slot1 = winning_position[0]
             slot2 = winning_position[1]
             slot3 = winning_position[2]
