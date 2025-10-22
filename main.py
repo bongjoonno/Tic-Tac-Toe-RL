@@ -1,6 +1,7 @@
 from imports import choice, sleep
 from tic_tac_toe_board import Board
 from constants import EPSILON
+from q_learning import q_learning
 
 #q-table function system
 
@@ -14,6 +15,7 @@ epochs = 100_000
 
 for _ in range(epochs // 2):
     outcome = board.move('X', random = False)
+    q_learning(board)
     
     if 'WON!' in outcome or 'Draw' in outcome:
         board = Board(q_table = q_table, epsilon = epsilon)

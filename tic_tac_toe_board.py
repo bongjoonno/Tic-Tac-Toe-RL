@@ -25,7 +25,6 @@ class Board():
         self.spots_left = list(range(0, 9))
         self.possible_moves = []
         self.possible_moves_fen_dict = {}
-        self.last_move_fen = 
         
     def display_board(self):
         for row in self.board:
@@ -114,6 +113,10 @@ class Board():
     def possible_moves_update(self):
         self.possible_moves = self.calculate_possible_moves_fen()
         self.possible_moves_fen_dict = {move_fen: self.q_table.get(move_fen, 0) for move_fen in self.possible_moves}
+    
+    def q_learning_update(self):
+        self.possible_moves_update()
+        return max(self.possible_moves_fen_dict, key = self.possible_moves_fen_dict.get)
         
     def policy(self):
         random_move_prob = self.epsilon / len(self.possible_moves)
