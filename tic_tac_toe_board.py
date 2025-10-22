@@ -67,7 +67,7 @@ class Board():
     def update_q_table(self, move):
         self.last_move_fen = self.make_fen(move)
         
-        self.q_table[self.last_move_fen] = 0
+        self.q_table[self.last_move_fen] = self.q_table.get(self.last_move_fen, 0)
     
     def check_win(self, symbol):
         for winning_position in self.winning_position_pairs:
@@ -116,7 +116,7 @@ class Board():
     
     def q_learning_update(self):
         self.possible_moves_update()
-        return max(self.possible_moves_fen_dict, key = self.possible_moves_fen_dict.get)
+        return max(self.possible_moves_fen_dict.values())
         
     def policy(self):
         random_move_prob = self.epsilon / len(self.possible_moves)
