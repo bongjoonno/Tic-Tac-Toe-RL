@@ -10,7 +10,7 @@ epsilon = 1
 
 board = Board(q_table = q_table, epsilon = epsilon)
 
-epochs = 500_000
+epochs = 100_000
 
 for _ in range(epochs // 2):
     outcome = board.move('X', random = False)
