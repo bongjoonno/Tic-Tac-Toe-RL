@@ -105,14 +105,16 @@ class Board:
         if len(self.possible_moves) == 1:
             return self.spots_left[0]
 
-        elif not all(self.possible_moves_fen_dict.values()) or move_style == "random":
-            return choice(self.spots_left)
-        
         elif move_style == "choose":
             move = ''
+            self.display_board()
             while move not in set(self.spots_left):
                 move = int(input("Type in your move (1-9): ")) 
             return move
+
+        elif not all(self.possible_moves_fen_dict.values()) or move_style == "random":
+            return choice(self.spots_left)
+        
         elif move_style == 'policy':
             return self.policy()
         else:

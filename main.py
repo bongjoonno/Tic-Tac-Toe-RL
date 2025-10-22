@@ -19,13 +19,8 @@ for i in range(epochs):
         epsilon = max(0, epsilon ** 0.999)
         continue
     
-    outcome = board.move('O', move_style = 'choose9')
+    outcome = board.move('O', move_style = 'choose')
     
     if 'WON!' in outcome or 'Draw' in outcome:
         board = Board(epsilon)
         epsilon = max(0, epsilon ** 0.999)
-        
-    
-    
-print(Board.q_table)
-print(len(Board.q_table))
