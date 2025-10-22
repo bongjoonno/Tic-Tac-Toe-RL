@@ -5,11 +5,9 @@ from q_learning import q_learning
 
 #q-table function system
 
-q_table = {}
-
 epsilon = 1
 
-board = Board(q_table = q_table, epsilon = epsilon)
+board = Board(epsilon = epsilon)
 
 epochs = 10_000
 
