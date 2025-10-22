@@ -5,26 +5,27 @@ from q_learning import q_learning
 
 #q-table function system
 
-epsilon = 1
+epsilon = EPSILON
 
-board = Board(epsilon = epsilon)
+board = Board(epsilon)
 
-epochs = 10_000
+epochs = 50_000
 
 for i in range(epochs):
     outcome = q_learning(board)
     
     if 'WON!' in outcome or 'Draw' in outcome:
-        board = Board(q_table = board.q_table, epsilon = epsilon)
+        board = Board(epsilon)
         epsilon = max(0, epsilon ** 0.999)
         continue
     
     outcome = board.move('O', random = True)
     
     if 'WON!' in outcome or 'Draw' in outcome:
-        board = Board(q_table = board.q_table, epsilon = epsilon)
+        board = Board(epsilon)
         epsilon = max(0, epsilon ** 0.999)
         
     
     
-print(q_table)
+print(Board.q_table)
+print(len(Board.q_table))

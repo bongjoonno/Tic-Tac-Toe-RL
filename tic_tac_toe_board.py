@@ -9,9 +9,9 @@ class Board:
                               [(0, 2), (1, 2), (2, 2)],
                               [(0, 0), (1, 1), (2, 2)],
                               [(0, 2), (1, 1), (2, 0)]]
-    
-    def __init__(self, q_table = {}, epsilon = 0.75):
-        self.q_table = q_table
+    q_table = {}
+
+    def __init__(self, epsilon = 0.75):
         self.epsilon = epsilon
         self.max_q_score_move_greedy_prob = 1 - self.epsilon
         self.board = [['0', '0', '0'],
@@ -67,7 +67,7 @@ class Board:
     def update_q_table(self, move):
         self.last_move_fen = self.make_fen(move)
         
-        self.q_table[self.last_move_fen] = self.q_table.get(self.last_move_fen, 0)
+        Board.q_table[self.last_move_fen] = Board.q_table.get(self.last_move_fen, 0)
     
     def check_win(self, symbol):
         for winning_position in Board.winning_position_pairs:
@@ -112,7 +112,7 @@ class Board:
 
     def possible_moves_update(self):
         self.possible_moves = self.calculate_possible_moves_fen()
-        self.possible_moves_fen_dict = {move_fen: self.q_table.get(move_fen, 0) for move_fen in self.possible_moves}
+        self.possible_moves_fen_dict = {move_fen: Board.q_table.get(move_fen, 0) for move_fen in self.possible_moves}
     
     def q_learning_update(self):
         self.possible_moves_update()
