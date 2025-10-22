@@ -35,8 +35,12 @@ class Board():
         self.last_move_player = symbol
 
         move = self.get_next_move(random)
-        
-        self.update_stuff(move)
+
+        self.spots_left.remove(move)
+
+        if not random:
+            self.update_q_table(move)
+
         self.update_board(move, symbol)
         
         outcome = self.check_win(symbol)
@@ -53,10 +57,6 @@ class Board():
             
             
         return outcome
-
-    def update_stuff(self, move):
-        self.spots_left.remove(move)
-        self.update_q_table(move)
 
     def update_board(self, move, symbol):
         y, x = (move // 3, move % 3)
