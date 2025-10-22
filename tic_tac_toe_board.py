@@ -25,6 +25,7 @@ class Board():
         self.spots_left = list(range(0, 9))
         self.possible_moves = []
         self.possible_moves_fen_dict = {}
+        self.last_move_fen = 
         
     def display_board(self):
         for row in self.board:
@@ -49,11 +50,13 @@ class Board():
             if self.spots_left == []:
                 outcome = 'Draw'
             else:
-                self.rewards[symbol] -= 0.1
+                self.last_reward = -0.1
+                self.rewards[symbol] += self.last_reward
         
         else:
-            self.rewards[symbol] += 10
-            self.rewards[self.opposite_symbol[symbol]] -= 10
+            self.last_reward = 10
+            self.rewards[symbol] += self.last_reward
+            self.rewards[self.opposite_symbol[symbol]] -= self.last_reward
             
             
         return outcome
@@ -63,7 +66,9 @@ class Board():
         self.board[y][x] = symbol
     
     def update_q_table(self, move):
-        self.q_table[self.make_fen(move)] = 0
+        self.last_move_fen = self.make_fen(move)
+        
+        self.q_table[self.last_move_fen] = 0
     
     def check_win(self, symbol):
         for winning_position in self.winning_position_pairs:
