@@ -22,7 +22,7 @@ class Board:
         
         self.rewards = {'X' : 0, 'O' : 0}
         self.opposite_symbol = {'X' : 'O', 'O' : 'X'}
-        self.spots_left = list(range(0, 9))
+        self.spots_left = list(range(9))
         self.possible_moves = []
         self.possible_moves_fen_dict = {}
         
@@ -31,14 +31,14 @@ class Board:
             print(row)
         print('\n')
         
-    def move(self, symbol, random = False):
+    def move(self, symbol, move_style):
         self.last_move_player = symbol
 
-        move = self.get_next_move(random)
+        move = self.get_next_move(move_style)
 
         self.spots_left.remove(move)
 
-        if not random:
+        if symbol == "X":
             self.update_q_table(move)
 
         self.update_board(move, symbol)
@@ -99,16 +99,24 @@ class Board:
         
         return possible_moves_fens
 
-    def get_next_move(self, random):
+    def get_next_move(self, move_style):
         self.possible_moves_update()
         
         if len(self.possible_moves) == 1:
             return self.spots_left[0]
 
-        elif not all(self.possible_moves_fen_dict.values()) or random:
+        elif not all(self.possible_moves_fen_dict.values()) or move_style == "random":
             return choice(self.spots_left)
-        else:
+        
+        elif move_style == "choose":
+            move = ''
+            while move not in set(self.spots_left):
+                move = int(input("Type in your move (1-9): ")) 
+            return move
+        elif move_style == 'policy':
             return self.policy()
+        else:
+            raise ValueError("Invalid move style, must be 'random', 'choose', or 'policy'")
 
     def possible_moves_update(self):
         self.possible_moves = self.calculate_possible_moves_fen()
