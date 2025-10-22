@@ -18,14 +18,14 @@ for _ in range(epochs // 2):
     q_learning(board)
     
     if 'WON!' in outcome or 'Draw' in outcome:
-        board = Board(q_table = q_table, epsilon = epsilon)
+        board = Board(q_table = board.q_table, epsilon = epsilon)
         epsilon = max(0, epsilon ** 0.999)
         continue
     
     outcome = board.move('O', random = True)
     
     if 'WON!' in outcome or 'Draw' in outcome:
-        board = Board(q_table = q_table, epsilon = epsilon)
+        board = Board(q_table = board.q_table, epsilon = epsilon)
         epsilon = max(0, epsilon ** 0.999)
         
     
