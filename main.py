@@ -13,14 +13,14 @@ board = Board(q_table = q_table, epsilon = epsilon)
 epochs = 500_000
 
 for _ in range(epochs // 2):
-    outcome = board.move('X')
+    outcome = board.move('X', random = False)
     
     if 'WON!' in outcome or 'Draw' in outcome:
         board = Board(q_table = q_table, epsilon = epsilon)
         epsilon = max(0, epsilon ** 0.999)
         continue
     
-    outcome = board.random_move('O')
+    outcome = board.move('O', random = True))
     
     if 'WON!' in outcome or 'Draw' in outcome:
         board = Board(q_table = q_table, epsilon = epsilon)
