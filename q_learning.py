@@ -6,10 +6,11 @@ def q_learning(board: Board):
 
     current_q_score = board.q_table[board.last_move_fen]
 
-    if outcome == "X WON!":
-        board.q_table[board.last_move_fen] += ALPHA * (board.last_reward - current_q_score)
-    else:
+    try:
         max_reward_move_q_score_for_next_state = board.q_learning_update()
-        board.q_table[board.last_move_fen] += ALPHA * (board.last_reward + (GAMMA * (max_reward_move_q_score_for_next_state)) - current_q_score)
+    except ValueError:
+        max_reward_move_q_score_for_next_state = 0
+    
+    board.q_table[board.last_move_fen] += ALPHA * (board.last_reward + (GAMMA * max_reward_move_q_score_for_next_state) - current_q_score)
     
     return outcome
