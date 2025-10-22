@@ -11,7 +11,7 @@ epsilon = 1
 
 board = Board(q_table = q_table, epsilon = epsilon)
 
-epochs = 100_000
+epochs = 10_000
 
 for i in range(epochs):
     outcome = q_learning(board)
@@ -29,4 +29,4 @@ for i in range(epochs):
         
     
     
-print(len(q_table))
+print(q_table)
