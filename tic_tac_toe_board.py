@@ -1,22 +1,22 @@
 from imports import choice, choices
 
-class Board():
-    def __init__(self, q_table = {}, epsilon = 0.75):
-        self.q_table = q_table
+class Board:
+    winning_position_pairs = [[(0, 0), (0, 1), (0, 2)],
+                              [(1, 0), (1, 1), (1, 2)],
+                              [(2, 0), (2, 1), (2, 2)],
+                              [(0, 0), (1, 0), (2, 0)],
+                              [(0, 1), (1, 1), (2, 1)],
+                              [(0, 2), (1, 2), (2, 2)],
+                              [(0, 0), (1, 1), (2, 2)],
+                              [(0, 2), (1, 1), (2, 0)]]
+    q_table = {}
+
+    def __init__(self, epsilon = 0.75):
         self.epsilon = epsilon
         self.max_q_score_move_greedy_prob = 1 - self.epsilon
         self.board = [['0', '0', '0'],
                       ['0', '0', '0'],
                       ['0', '0', '0']]
-
-        self.winning_position_pairs = [[(0, 0), (0, 1), (0, 2)],
-                                      [(1, 0), (1, 1), (1, 2)],
-                                      [(2, 0), (2, 1), (2, 2)],
-                                      [(0, 0), (1, 0), (2, 0)],
-                                      [(0, 1), (1, 1), (2, 1)],
-                                      [(0, 2), (1, 2), (2, 2)],
-                                      [(0, 0), (1, 1), (2, 2)],
-                                      [(0, 2), (1, 1), (2, 0)]]
         
         self.last_move_player = 'X'
         
@@ -31,12 +31,16 @@ class Board():
             print(row)
         print('\n')
         
-    def move(self, symbol):
+    def move(self, symbol, random = False):
         self.last_move_player = symbol
-        
-        move = self.get_next_move()
-        
-        self.update_stuff(move)
+
+        move = self.get_next_move(random)
+
+        self.spots_left.remove(move)
+
+        if not random:
+            self.update_q_table(move)
+
         self.update_board(move, symbol)
         
         outcome = self.check_win(symbol)
@@ -45,28 +49,28 @@ class Board():
             if self.spots_left == []:
                 outcome = 'Draw'
             else:
-                self.rewards[symbol] -= 0.1
+                self.last_reward = -0.1
+                self.rewards[symbol] += self.last_reward
         
         else:
-            self.rewards[symbol] += 10
-            self.rewards[self.opposite_symbol[symbol]] -= 10
+            self.last_reward = 10
+            self.rewards[symbol] += self.last_reward
+            self.rewards[self.opposite_symbol[symbol]] -= self.last_reward
             
             
         return outcome
-
-    def update_stuff(self, move):
-        self.spots_left.remove(move)
-        self.update_q_table(move)
 
     def update_board(self, move, symbol):
         y, x = (move // 3, move % 3)
         self.board[y][x] = symbol
     
     def update_q_table(self, move):
-        self.q_table[self.make_fen(move)] = 0
+        self.last_move_fen = self.make_fen(move)
+        
+        Board.q_table[self.last_move_fen] = Board.q_table.get(self.last_move_fen, 0)
     
     def check_win(self, symbol):
-        for winning_position in self.winning_position_pairs:
+        for winning_position in Board.winning_position_pairs:
             slot1 = winning_position[0]
             slot2 = winning_position[1]
             slot3 = winning_position[2]
@@ -95,20 +99,24 @@ class Board():
         
         return possible_moves_fens
 
-    def get_next_move(self):
+    def get_next_move(self, random):
         self.possible_moves_update()
         
         if len(self.possible_moves) == 1:
             return self.spots_left[0]
 
-        elif not all(self.possible_moves_fen_dict.values()):
+        elif not all(self.possible_moves_fen_dict.values()) or random:
             return choice(self.spots_left)
         else:
             return self.policy()
 
     def possible_moves_update(self):
         self.possible_moves = self.calculate_possible_moves_fen()
-        self.possible_moves_fen_dict = {move_fen: self.q_table.get(move_fen, 0) for move_fen in self.possible_moves}
+        self.possible_moves_fen_dict = {move_fen: Board.q_table.get(move_fen, 0) for move_fen in self.possible_moves}
+    
+    def q_learning_update(self):
+        self.possible_moves_update()
+        return max(self.possible_moves_fen_dict.values())
         
     def policy(self):
         random_move_prob = self.epsilon / len(self.possible_moves)

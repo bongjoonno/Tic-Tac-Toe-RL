@@ -1,31 +1,31 @@
 from imports import choice, sleep
 from tic_tac_toe_board import Board
 from constants import EPSILON
+from q_learning import q_learning
 
 #q-table function system
 
-q_table = {}
+epsilon = EPSILON
 
-epsilon = 1
+board = Board(epsilon)
 
-board = Board(q_table = q_table, epsilon = epsilon)
+epochs = 50_000
 
-epochs = 500_000
-
-for _ in range(epochs // 2):
-    outcome = board.move('X')
+for i in range(epochs):
+    outcome = q_learning(board)
     
     if 'WON!' in outcome or 'Draw' in outcome:
-        board = Board(q_table = q_table, epsilon = epsilon)
+        board = Board(epsilon)
         epsilon = max(0, epsilon ** 0.999)
         continue
     
-    outcome = board.move('O')
+    outcome = board.move('O', random = True)
     
     if 'WON!' in outcome or 'Draw' in outcome:
-        board = Board(q_table = q_table, epsilon = epsilon)
+        board = Board(epsilon)
         epsilon = max(0, epsilon ** 0.999)
         
     
     
-print(len(q_table))
+print(Board.q_table)
+print(len(Board.q_table))
