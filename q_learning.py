@@ -2,7 +2,7 @@ from tic_tac_toe_board import Board
 from constants import ALPHA, GAMMA
 
 def q_learning(board: Board):
-    outcome = board.move('X', random = False)
+    outcome = board.move('X', move_style = 'policy')
 
     current_q_score = Board.q_table[board.last_move_fen]
 
