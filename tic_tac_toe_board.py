@@ -11,20 +11,22 @@ class Board:
                               [(0, 2), (1, 1), (2, 0)]]
     q_table = {}
 
-    def __init__(self, epsilon = 0.75):
+    opposite_symbol = {'X' : 'O', 'O' : 'X'}
+
+    def __init__(self, epsilon):
         self.epsilon = epsilon
         self.max_q_score_move_greedy_prob = 1 - self.epsilon
         self.board = [['0', '0', '0'],
                       ['0', '0', '0'],
                       ['0', '0', '0']]
         
-        self.last_move_player = 'X'
+        self.last_move_player = 'O'
         
         self.rewards = {'X' : 0, 'O' : 0}
-        self.opposite_symbol = {'X' : 'O', 'O' : 'X'}
         self.spots_left = list(range(9))
         self.possible_moves = []
         self.possible_moves_fen_dict = {}
+        self.last_reward = 0
         
     def display_board(self):
         for row in self.board:
@@ -55,7 +57,7 @@ class Board:
         else:
             self.last_reward = 10
             self.rewards[symbol] += self.last_reward
-            self.rewards[self.opposite_symbol[symbol]] -= self.last_reward
+            self.rewards[Board.opposite_symbol[symbol]] -= self.last_reward
             
             
         return outcome
@@ -102,9 +104,13 @@ class Board:
     def get_next_move(self, move_style):
         self.possible_moves_update()
         
+
         if len(self.possible_moves) == 1:
             return self.spots_left[0]
 
+        elif 'specific' in move_style:
+            return move_style['specific']
+        
         elif move_style == "choose":
             move = ''
             self.display_board()
@@ -118,7 +124,7 @@ class Board:
         elif move_style == 'policy':
             return self.policy()
         else:
-            raise ValueError("Invalid move style, must be 'random', 'choose', or 'policy'")
+            raise ValueError("Invalid move style, must be 'random', 'specific', 'choose', or 'policy'")
 
     def possible_moves_update(self):
         self.possible_moves = self.calculate_possible_moves_fen()

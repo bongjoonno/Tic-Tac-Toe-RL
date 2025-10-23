@@ -14,7 +14,7 @@ def train_test(epochs: int, train_or_test = 'train'):
         
     board = Board(epsilon)
 
-    for i in range(epochs):
+    for _ in range(epochs):
         outcome = q_learning(board)
         
         if 'WON!' in outcome or 'Draw' in outcome:

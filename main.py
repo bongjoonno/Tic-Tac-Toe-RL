@@ -11,7 +11,4 @@ board = Board(epsilon)
 
 epochs = 50_000
 
-print(len(Board.q_table))
-train_test(epochs, 'train')
-print(len(Board.q_table))
-train_test(epochs, 'play')
+train_test(epochs, 'minimax')
