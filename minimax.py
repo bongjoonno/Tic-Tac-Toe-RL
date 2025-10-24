@@ -41,11 +41,18 @@ def minimax(board: Board):
 def minimax_test():
     board = Board(0)
 
-    
-    chosen_move = minimax(board)
     symbol_to_move = Board.opposite_symbol[board.last_move_player]
+    chosen_move = minimax(board)
     outcome = board.move(symbol_to_move, {'specific' : chosen_move})
         
     print(outcome)
+    board.display_board()
+
+    symbol_to_move = Board.opposite_symbol[board.last_move_player]
+    chosen_move = minimax(board)
+    outcome = board.move(symbol_to_move, {'specific' : chosen_move})
+        
+    print(outcome)
+    board.display_board()
 
 if __name__ == '__main__': minimax_test()
