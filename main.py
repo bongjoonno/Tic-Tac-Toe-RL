@@ -1,7 +1,5 @@
-from imports import choice, sleep
 from tic_tac_toe_board import Board
 from constants import EPSILON
-from q_learning import q_learning
 from train_test import train_test
 #q-table function system
 
