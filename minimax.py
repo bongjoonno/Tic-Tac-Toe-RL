@@ -1,8 +1,8 @@
 from tic_tac_toe_board import Board
 from imports import deepcopy
 
-def minimax(board: Board, best_action = None):
-    if best_action is not None and board.last_reward in [-10, 10]:
+def minimax(board: Board):
+    if board.spots_left == []:
         return board.last_reward
     
     symbol_to_move = Board.opposite_symbol[board.last_move_player]
@@ -14,10 +14,15 @@ def minimax(board: Board, best_action = None):
             board_cop = deepcopy(board)
             board_cop.move(symbol_to_move, {'specific' : a})
             
-            value = max(value, minimax(board_cop))
-        
-        return value
+            recursive_eval = minimax(board_cop)
 
+            if recursive_eval > value:
+                best_action = a
+                value = recursive_eval
+        
+        return best_action
+
+    
     if symbol_to_move == 'O':
         value = float('inf')
 
@@ -25,12 +30,22 @@ def minimax(board: Board, best_action = None):
             board_cop = deepcopy(board)
             board_cop.move(symbol_to_move, {'specific' : a})
             
-            value = min(value, minimax(board_cop))
+            recursive_eval = minimax(board_cop)
+
+            if recursive_eval < value:
+                best_action = a
+                value = recursive_eval
         
-        return value
+        return best_action
+
+def minimax_test():
+    board = Board(0)
+
     
+    chosen_move = minimax(board)
+    symbol_to_move = Board.opposite_symbol[board.last_move_player]
+    outcome = board.move(symbol_to_move, {'specific' : chosen_move})
+        
+    print(outcome)
 
-board = Board(0)
-
-res = minimax(board)
-print(res)
+if __name__ == '__main__': minimax_test()

@@ -49,6 +49,7 @@ class Board:
         
         if outcome == 'No win...':
             if self.spots_left == []:
+                self.last_reward = 0
                 outcome = 'Draw'
             else:
                 self.last_reward = -0.1
