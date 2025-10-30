@@ -10,7 +10,7 @@ class Board:
                               [(0, 0), (1, 1), (2, 2)],
                               [(0, 2), (1, 1), (2, 0)]]
     q_table = {}
-
+    policy_count = 0
     opposite_symbol = {'X' : 'O', 'O' : 'X'}
 
     def __init__(self, epsilon):
@@ -50,12 +50,12 @@ class Board:
         if outcome == 'No win...':
             if self.spots_left == []:
                 outcome = 'Draw'
-            else:
-                self.last_reward = -0.1
-                self.rewards[self.last_move_player] += self.last_reward
+            
+            self.last_reward = -0.1
+            self.rewards[self.last_move_player] += self.last_reward
         
         else:
-            self.last_reward = 10
+            self.last_reward = 100
             self.rewards[self.last_move_player] += self.last_reward
             self.rewards[Board.opposite_symbol[self.last_move_player]] -= self.last_reward
             
@@ -118,7 +118,7 @@ class Board:
                 move = int(input("Type in your move (1-9): ")) 
             return move-1
 
-        elif not all(self.possible_moves_fen_dict.values()) or move_style == "random":
+        elif all(v == 0 for v in self.possible_moves_fen_dict.values()) or move_style == "random":
             return choice(self.spots_left)
         
         elif move_style == 'policy':
@@ -135,6 +135,7 @@ class Board:
         return max(self.possible_moves_fen_dict.values())
         
     def policy(self):
+        Board.policy_count += 1
         random_move_prob = self.epsilon / len(self.possible_moves)
         max_q_score_move = max(self.possible_moves_fen_dict, key = self.possible_moves_fen_dict.get)
         

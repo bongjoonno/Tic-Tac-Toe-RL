@@ -4,8 +4,6 @@ from q_learning import q_learning
 def play():
     epsilon = 0
 
-    board = Board(epsilon)
-
     play_again = 'yes'
     outcome = ''
     
@@ -15,7 +13,7 @@ def play():
         player = input('which player do you want to choose (x/o): ').lower()
         
         
-        while 'WON!' not in outcome or outcome == 'Draw':
+        while 'WON!' not in outcome or outcome != 'Draw':
             if player == 'x':
                 outcome = board.move('choose')
                 q_learning(board)
