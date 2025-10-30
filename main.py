@@ -7,9 +7,9 @@ from play import play
 
 epsilon = EPSILON
 
-board = Board(epsilon)
+board = Board()
 
-epochs = 250_000
-rewards_x, rewards_o = train(epochs, training_mode = 'random')
-print(Board.policy_count)
+epochs = 1_000_000
+rewards_x, rewards_o = train(epochs, training_mode = 'self')
+print(Board.epsilon)
 play()

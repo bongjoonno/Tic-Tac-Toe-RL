@@ -1,4 +1,5 @@
 from imports import choice, choices
+from constants import EPSILON
 
 class Board:
     winning_position_pairs = [[(0, 0), (0, 1), (0, 2)],
@@ -12,10 +13,10 @@ class Board:
     q_table = {}
     policy_count = 0
     opposite_symbol = {'X' : 'O', 'O' : 'X'}
+    epsilon = EPSILON
 
-    def __init__(self, epsilon):
-        self.epsilon = epsilon
-        self.max_q_score_move_greedy_prob = 1 - self.epsilon
+    def __init__(self):
+        self.max_q_score_move_greedy_prob = 1 - Board.epsilon
         self.board = [['0', '0', '0'],
                       ['0', '0', '0'],
                       ['0', '0', '0']]
@@ -55,7 +56,7 @@ class Board:
             self.rewards[self.last_move_player] += self.last_reward
         
         else:
-            self.last_reward = 100
+            self.last_reward = 10
             self.rewards[self.last_move_player] += self.last_reward
             self.rewards[Board.opposite_symbol[self.last_move_player]] -= self.last_reward
             
@@ -136,7 +137,7 @@ class Board:
         
     def policy(self):
         Board.policy_count += 1
-        random_move_prob = self.epsilon / len(self.possible_moves)
+        random_move_prob = Board.epsilon / len(self.possible_moves)
         max_q_score_move = max(self.possible_moves_fen_dict, key = self.possible_moves_fen_dict.get)
         
         probs = []
