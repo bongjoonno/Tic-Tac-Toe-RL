@@ -10,4 +10,5 @@ board = Board(epsilon)
 
 epochs = 500_000
 rewards_x, rewards_o = train_test(epochs, 'train')
+print(len(board.q_table))
 train_test(epochs, 'play')
