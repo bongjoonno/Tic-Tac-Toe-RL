@@ -34,54 +34,53 @@ class Board:
             print(row)
         print('\n')
         
-    def move(self, symbol, move_style):
-        self.last_move_player = symbol
+    def move(self, move_style):
+        self.last_move_player = Board.opposite_symbol[self.last_move_player]
 
         move = self.get_next_move(move_style)
 
         self.spots_left.remove(move)
 
-        if symbol == "X":
-            self.update_q_table(move)
+        self.update_q_table(move)
 
-        self.update_board(move, symbol)
+        self.update_board(move)
         
-        outcome = self.check_win(symbol)
+        outcome = self.check_win()
         
         if outcome == 'No win...':
             if self.spots_left == []:
                 outcome = 'Draw'
             else:
                 self.last_reward = -0.1
-                self.rewards[symbol] += self.last_reward
+                self.rewards[self.last_move_player] += self.last_reward
         
         else:
             self.last_reward = 10
-            self.rewards[symbol] += self.last_reward
-            self.rewards[Board.opposite_symbol[symbol]] -= self.last_reward
+            self.rewards[self.last_move_player] += self.last_reward
+            self.rewards[Board.opposite_symbol[self.last_move_player]] -= self.last_reward
             
             
         return outcome
 
-    def update_board(self, move, symbol):
+    def update_board(self, move):
         y, x = (move // 3, move % 3)
-        self.board[y][x] = symbol
+        self.board[y][x] = self.last_move_player
     
     def update_q_table(self, move):
         self.last_move_fen = self.make_fen(move)
         
         Board.q_table[self.last_move_fen] = Board.q_table.get(self.last_move_fen, 0)
     
-    def check_win(self, symbol):
+    def check_win(self):
         for winning_position in Board.winning_position_pairs:
             slot1 = winning_position[0]
             slot2 = winning_position[1]
             slot3 = winning_position[2]
             
-            if self.board[slot1[0]][slot1[1]] == symbol:
-                if self.board[slot2[0]][slot2[1]] == symbol:
-                    if self.board[slot3[0]][slot3[1]] == symbol:
-                        return f'{symbol} WON!'
+            if self.board[slot1[0]][slot1[1]] == self.last_move_player:
+                if self.board[slot2[0]][slot2[1]] == self.last_move_player:
+                    if self.board[slot3[0]][slot3[1]] == self.last_move_player:
+                        return f'{self.last_move_player} WON!'
         return 'No win...'
 
     def make_fen(self, move):
@@ -92,6 +91,7 @@ class Board:
         
         fen.append(self.last_move_player)
         fen.append(str(move))
+        fen.append(self.last_move_player)
         return ''.join(fen)  
     
     def calculate_possible_moves_fen(self):
