@@ -27,6 +27,7 @@ class Board:
         self.possible_moves = []
         self.possible_moves_fen_dict = {}
         self.last_reward = 0
+        self.total_game_reward = 0
         
     def display_board(self):
         for row in self.board:

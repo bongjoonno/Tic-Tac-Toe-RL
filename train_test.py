@@ -14,10 +14,15 @@ def train_test(epochs: int, train_or_test = 'train'):
         
     board = Board(epsilon)
 
+    rewards_x = []
+    rewards_o = []
+    
     for _ in range(epochs):
         outcome = q_learning(board)
         
         if 'WON!' in outcome or 'Draw' in outcome:
+            rewards_x.append(board.rewards['X'])
+            rewards_o.append(board.rewards['O'])
             board = Board(epsilon)
             epsilon = max(0, epsilon ** 0.999)
             continue
@@ -25,5 +30,9 @@ def train_test(epochs: int, train_or_test = 'train'):
         outcome = board.move('O', move_style = move_style)
         
         if 'WON!' in outcome or 'Draw' in outcome:
+            rewards_x.append(board.rewards['X'])
+            rewards_o.append(board.rewards['O'])
             board = Board(epsilon)
             epsilon = max(0, epsilon ** 0.999)
+    
+    return rewards_x, rewards_o
