@@ -9,6 +9,6 @@ epsilon = EPSILON
 
 board = Board(epsilon)
 
-epochs = 100_000
-train(epochs)
+epochs = 1_000_000
+rewards_x, rewards_o = train(epochs)
 play()
