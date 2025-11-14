@@ -81,7 +81,7 @@ class Board:
         elif move_style == 'policy':
             return self.policy()
         else:
-            raise ValueError("Invalid move style, must be 'random', 'specific', 'choose', or 'policy'")
+            raise ValueError("Invalid move style, must be 'random', 'choose', or 'policy'")
 
     def make_fen(self, spot):
         fen = []
@@ -118,21 +118,19 @@ class Board:
     
         
     def policy(self):
-        random_move_prob = self.epsilon / len(self.spots_left)
-        max_fen = max(self.next_possible_position_fens_dict, key=self.next_possible_position_fens_dict.get)
-
+        random_move_prob = self.epsilon / len(self.next_possible_position_fens)
+        max_v_score_position = max(self.next_possible_position_fens_dict, key = self.next_possible_position_fens_dict.get)
+        
         probs = []
         
-        for spot in self.spots_left:
-            fen = self.make_fen(spot)
-            
-            if fen == max_fen:
+        for position in self.next_possible_position_fens:
+            if position == max_v_score_position:
                 probs.append(random_move_prob + self.max_v_score_move_greedy_prob)
             else:
                 probs.append(random_move_prob)
-
-        return choices(self.spots_left, weights=probs)[0]
-        
+                
+        return choices(self.spots_left, weights = probs)[0]
+    
     def v_learning_update(self):
         self.next_possible_position_fens = [self.make_fen(spot) for spot in self.spots_left]
         self.next_possible_position_fens_dict = {position: Board.v_table.get(position, 0) for position in self.next_possible_position_fens}

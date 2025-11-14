@@ -1,6 +1,7 @@
 from tic_tac_toe_board import Board
 from v_learning import v_learning
 from constants import EPSILON
+from imports import plt
 
 def train_test(epochs: int, train_or_test = 'train'):
     if train_or_test == 'train':
@@ -13,13 +14,15 @@ def train_test(epochs: int, train_or_test = 'train'):
         raise ValueError("Invalid model-style, choose 'train', or 'play'")
         
     board = Board(epsilon)
-
+    x_rewards = []
+    
     for _ in range(epochs):
         outcome = v_learning(board)
         
         if 'WON!' in outcome or 'Draw' in outcome:
             board = Board(epsilon)
             epsilon = max(0, epsilon ** 0.999)
+            x_rewards.append(board.rewards['X'])
             continue
         
         outcome = board.move('O', move_style = move_style)
@@ -27,3 +30,7 @@ def train_test(epochs: int, train_or_test = 'train'):
         if 'WON!' in outcome or 'Draw' in outcome:
             board = Board(epsilon)
             epsilon = max(0, epsilon ** 0.999)
+            x_rewards.append(board.rewards['X'])
+    
+    plt.plot(range(len(x_rewards)), x_rewards)
+    plt.show()
