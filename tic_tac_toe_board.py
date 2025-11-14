@@ -72,7 +72,7 @@ class Board:
             self.display_board()
             
             while move not in set(self.spots_left):
-                move = int(input("Type in your move (1-9): ")) 
+                move = int(input("Type in your move (0-8): ")) 
             return move
 
         elif not all(self.next_possible_position_fens_dict.values()) or move_style == "random":
@@ -118,19 +118,21 @@ class Board:
     
         
     def policy(self):
-        random_move_prob = self.epsilon / len(self.next_possible_position_fens)
-        max_v_score_position = max(self.next_possible_position_fens_dict, key = self.next_possible_position_fens_dict.get)
-        
+        random_move_prob = self.epsilon / len(self.spots_left)
+        max_fen = max(self.next_possible_position_fens_dict, key=self.next_possible_position_fens_dict.get)
+
         probs = []
         
-        for position in self.next_possible_position_fens:
-            if position == max_v_score_position:
+        for spot in self.spots_left:
+            fen = self.make_fen(spot)
+            
+            if fen == max_fen:
                 probs.append(random_move_prob + self.max_v_score_move_greedy_prob)
             else:
                 probs.append(random_move_prob)
-                
-        return choices(self.spots_left, weights = probs).pop()  
-    
+
+        return choices(self.spots_left, weights=probs)[0]
+        
     def v_learning_update(self):
         self.next_possible_position_fens = [self.make_fen(spot) for spot in self.spots_left]
         self.next_possible_position_fens_dict = {position: Board.v_table.get(position, 0) for position in self.next_possible_position_fens}
