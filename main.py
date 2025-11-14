@@ -9,4 +9,5 @@ board = Board(epsilon)
 
 epochs = 50_000
 
-train_test(epochs, 'minimax')
+train_test(epochs, 'train')
+train_test(epochs, 'play')

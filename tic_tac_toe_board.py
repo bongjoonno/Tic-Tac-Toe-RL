@@ -90,7 +90,6 @@ class Board:
                 fen.append(item)
         
         fen.append(self.last_move_player)
-        fen.append(str(move))
         return ''.join(fen)  
     
     def calculate_possible_moves_fen(self):
