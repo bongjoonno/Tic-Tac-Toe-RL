@@ -20,13 +20,13 @@ def train_test(epochs: int, train_or_test = 'train'):
         
         if outcome == 'X WON!' or outcome == 'Draw':
             board = Board(epsilon)
-            epsilon = max(0.05, epsilon * 0.997)
+            epsilon = max(0, epsilon * 0.997)
             continue
         
         outcome = board.move('O', move_style = move_style)
         
         if outcome == 'O WON!' or outcome == 'Draw':
             board = Board(epsilon)
-            epsilon = max(0.05, epsilon * 0.997)
+            epsilon = max(0, epsilon * 0.997)
     
     return Board.total_rewards
