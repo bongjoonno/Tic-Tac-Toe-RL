@@ -83,7 +83,7 @@ class Board:
             
             while move-1 not in set(self.spots_left):
                 move = int(input("Type in your move (1-9): ")) 
-            return move
+            return move-1
 
         elif not all(self.next_possible_position_fens_dict.values()) or move_style == "random":
             return choice(self.spots_left)

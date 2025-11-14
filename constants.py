@@ -4,4 +4,4 @@
 # hyper-parameters
 EPSILON = 1
 GAMMA = 1
-ALPHA = 0.6
+ALPHA = 0.5
