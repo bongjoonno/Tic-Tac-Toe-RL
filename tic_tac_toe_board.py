@@ -100,7 +100,7 @@ class Board:
             for item in row:
                 fen.append(item)
         
-        fen.append(Board.opposite_symbol[self.last_move_player])
+        fen.append(self.last_move_player)
         fen[spot] = Board.opposite_symbol[self.last_move_player]
         return ''.join(fen)  
     
