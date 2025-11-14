@@ -48,12 +48,11 @@ class Board:
         if outcome == 'No win...':
             if self.spots_left == []:
                 outcome = 'Draw'
-            else:
-                self.last_reward = -0.1
-                self.rewards[symbol] += self.last_reward
+                
+            self.last_reward = 0
         
         else:
-            self.last_reward = 10
+            self.last_reward = 1
             self.rewards[symbol] += self.last_reward
             self.rewards[Board.opposite_symbol[symbol]] -= self.last_reward
             
@@ -132,6 +131,7 @@ class Board:
                 
         return choices(self.spots_left, weights = probs).pop()  
     
-    def q_learning_update(self):
-        self.get_next_possible_positions()
-        return max(self.possible_moves_fen_dict.values())
+    def v_learning_update(self):
+        self.next_possible_position_fens = [self.make_fen(spot) for spot in self.spots_left]
+        self.next_possible_position_fens_dict = {position: Board.v_table.get(position, 0) for position in self.next_possible_position_fens}
+        return max(self.next_possible_position_fens_dict.values())
