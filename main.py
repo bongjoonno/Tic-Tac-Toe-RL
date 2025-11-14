@@ -6,7 +6,8 @@ epsilon = EPSILON
 
 board = Board(epsilon)
 
-epochs = 100_000
+epochs = 10_000_000
 
-train_test(epochs, 'train')
-train_test(epochs, 'play')
+total_rewards = train_test(epochs, 'train')
+print(total_rewards)
+#train_test(epochs, 'play')

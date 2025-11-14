@@ -12,6 +12,9 @@ class Board:
     v_table = {}
 
     opposite_symbol = {'X' : 'O', 'O' : 'X'}
+    
+    total_rewards = {'X' : 0, 'O' : 0}
+    total_O_reward = 0
 
     def __init__(self, epsilon):
         self.epsilon = epsilon
@@ -32,8 +35,6 @@ class Board:
         print('\n')
         
     def move(self, symbol, move_style):
-        self.last_move_player = symbol
-
         move = self.get_next_move(move_style)
 
         self.spots_left.remove(move)
@@ -45,18 +46,27 @@ class Board:
         
         outcome = self.check_win(symbol)
         
-        if outcome == 'No win...':
-            if self.spots_left == []:
-                outcome = 'Draw'
-                
-            self.last_reward = 0
-        
-        else:
+        if outcome == 'X WON!':
             self.last_reward = 1
+            
             self.rewards[symbol] += self.last_reward
             self.rewards[Board.opposite_symbol[symbol]] -= self.last_reward
             
+            Board.total_rewards[symbol] += self.last_reward
+            Board.total_rewards[Board.opposite_symbol[symbol]] -= self.last_reward
             
+        elif outcome == 'O WON!':
+            self.last_reward = -1
+            self.rewards[symbol] -= self.last_reward
+            self.rewards[Board.opposite_symbol[symbol]] += self.last_reward
+            
+            Board.total_rewards[symbol] -= self.last_reward
+            Board.total_rewards[Board.opposite_symbol[symbol]] += self.last_reward
+            
+        else: self.last_reward = 0
+        
+        
+        self.last_move_player = symbol
         return outcome
 
     def get_next_move(self, move_style):
@@ -90,7 +100,7 @@ class Board:
             for item in row:
                 fen.append(item)
         
-        fen.append(self.last_move_player)
+        fen.append(Board.opposite_symbol[self.last_move_player])
         fen[spot] = Board.opposite_symbol[self.last_move_player]
         return ''.join(fen)  
     
@@ -114,7 +124,9 @@ class Board:
                 if self.board[slot2[0]][slot2[1]] == symbol:
                     if self.board[slot3[0]][slot3[1]] == symbol:
                         return f'{symbol} WON!'
-        return 'No win...'
+                    
+        if not self.spots_left: return 'Draw'
+        else: return 'Game Continues'
     
         
     def policy(self):
