@@ -6,7 +6,7 @@ epsilon = EPSILON
 
 board = Board(epsilon)
 
-epochs = 5_000_000
+epochs = 500_000
 
 total_rewards, games = train_test(epochs, 'train')
 percentage_of_games_won = total_rewards['X']/games

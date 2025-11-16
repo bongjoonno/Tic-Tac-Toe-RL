@@ -24,7 +24,7 @@ def train_test(epochs: int, train_or_test = 'train'):
         if outcome == 'X WON!' or outcome == 'Draw':
             board = Board(epsilon)
             if train_or_test == 'train':
-                epsilon = max(0.05, epsilon * 0.999999)
+                epsilon = max(0.05, epsilon * 0.9999)
                 games += 1
             continue
         
@@ -33,7 +33,7 @@ def train_test(epochs: int, train_or_test = 'train'):
         if outcome == 'O WON!' or outcome == 'Draw':
             board = Board(epsilon)
             if train_or_test == 'train':
-                epsilon = max(0.05, epsilon * 0.999999)
+                epsilon = max(0.05, epsilon * 0.9999)
                 games += 1
     
     plt.plot(range(len(epsilons)), epsilons)
