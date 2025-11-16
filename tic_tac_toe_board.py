@@ -77,13 +77,13 @@ class Board:
             return self.spots_left[0]
         
         elif move_style == "choose":
-            move = ''
+            move = 0
             
             self.display_board()
             
-            while move not in set(self.spots_left):
-                move = int(input("Type in your move (0-8): ")) 
-            return move
+            while move-1 not in set(self.spots_left):
+                move = int(input("Type in your move (1-9): ")) 
+            return move-1
 
         elif not all(self.next_possible_position_fens_dict.values()) or move_style == "random":
             return choice(self.spots_left)
@@ -100,7 +100,7 @@ class Board:
             for item in row:
                 fen.append(item)
         
-        fen.append(Board.opposite_symbol[self.last_move_player])
+        fen.append(self.last_move_player)
         fen[spot] = Board.opposite_symbol[self.last_move_player]
         return ''.join(fen)  
     

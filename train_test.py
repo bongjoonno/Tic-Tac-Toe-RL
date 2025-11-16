@@ -14,19 +14,28 @@ def train_test(epochs: int, train_or_test = 'train'):
         raise ValueError("Invalid model-style, choose 'train', or 'play'")
         
     board = Board(epsilon)
+    games = 0
+    epsilons  = []
     
     for _ in range(epochs):
+        epsilons.append(epsilon)
         outcome = v_learning(board)
         
         if outcome == 'X WON!' or outcome == 'Draw':
             board = Board(epsilon)
-            epsilon = max(0, epsilon * 0.999)
+            if train_or_test == 'train':
+                epsilon = max(0.05, epsilon * 0.999999)
+                games += 1
             continue
         
         outcome = board.move('O', move_style = move_style)
         
         if outcome == 'O WON!' or outcome == 'Draw':
             board = Board(epsilon)
-            epsilon = max(0, epsilon * 0.999)
+            if train_or_test == 'train':
+                epsilon = max(0.05, epsilon * 0.999999)
+                games += 1
     
-    return Board.total_rewards
+    plt.plot(range(len(epsilons)), epsilons)
+    plt.show()
+    return Board.total_rewards, games
