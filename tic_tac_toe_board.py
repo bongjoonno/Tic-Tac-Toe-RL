@@ -1,4 +1,4 @@
-from imports import choice, choices
+from imports import np, choice, choices
 
 class Board:
     winning_position_pairs = [[(0, 0), (0, 1), (0, 2)],
@@ -70,7 +70,7 @@ class Board:
         return outcome
 
     def get_next_move(self, move_style):
-        self.next_possible_position_fens = [self.make_fen(spot) for spot in self.spots_left]
+        self.next_possible_position_fens = [self.make_fen_set(spot) for spot in self.spots_left]
         self.next_possible_position_fens_dict = {position: Board.v_table.get(position, 0) for position in self.next_possible_position_fens}
 
         if len(self.next_possible_position_fens) == 1:
@@ -93,21 +93,35 @@ class Board:
         else:
             raise ValueError("Invalid move style, must be 'random', 'choose', or 'policy'")
 
-    def make_fen(self, spot):
-        fen = []
+    def make_fen_set(self):
         
-        for row in self.board:
-            for item in row:
-                fen.append(item)
+        boards = []
         
-        fen.append(self.last_move_player)
-        fen[spot] = Board.opposite_symbol[self.last_move_player]
-        return ''.join(fen)  
+        temp_board = self.board
+        
+        for _ in range(3):
+            temp_board = np.rot90(temp_board)
+            boards.append(temp_board)
+            
+        
+        boards_set = set()
+        
+        for board in boards:
+            board_fen = []
+            
+            for row in board:
+                for item in row:
+                    board_fen.append(item)
+            
+            boards_set.add(''.join(board_fen))
+            
+            
+        return frozenset(boards_set)
     
     def update_v_table(self, move):
-        self.last_move_fen = self.make_fen(move)
+        self.last_move_fen_set = self.make_fen_set(move)
         
-        Board.v_table[self.last_move_fen] = Board.v_table.get(self.last_move_fen, 0)
+        Board.v_table[self.last_move_fen_set] = Board.v_table.get(self.last_move_fen_set, 0)
         
     def update_board(self, move, symbol):
         y, x = (move // 3, move % 3)
@@ -144,6 +158,6 @@ class Board:
         return choices(self.spots_left, weights = probs)[0]
     
     def v_learning_update(self):
-        self.next_possible_position_fens = [self.make_fen(spot) for spot in self.spots_left]
+        self.next_possible_position_fens = [self.make_fen_set(spot) for spot in self.spots_left]
         self.next_possible_position_fens_dict = {position: Board.v_table.get(position, 0) for position in self.next_possible_position_fens}
         return max(self.next_possible_position_fens_dict.values())
