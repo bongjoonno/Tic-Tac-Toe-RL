@@ -69,7 +69,7 @@ class Board:
         self.last_move_player = symbol
         return outcome
 
-    def get_next_move(self, move_style):
+    def get_next_move_fens(self):
         self.next_possible_position_fens = []
         
         for spot in self.spots_left:
@@ -81,7 +81,9 @@ class Board:
             self.next_possible_position_fens.append(self.make_fen_set(temp_board))
     
         self.next_possible_position_fens_dict = {position: Board.v_table.get(position, 0) for position in self.next_possible_position_fens}
-
+        
+    def get_next_move(self, move_style):
+        self.get_next_move_fens()
         if len(self.next_possible_position_fens) == 1:
             return self.spots_left[0]
         
@@ -165,6 +167,5 @@ class Board:
         return choices(self.spots_left, weights = probs)[0]
     
     def v_learning_update(self):
-        self.next_possible_position_fens = [self.make_fen_set(spot) for spot in self.spots_left]
-        self.next_possible_position_fens_dict = {position: Board.v_table.get(position, 0) for position in self.next_possible_position_fens}
+        self.get_next_move_fens()
         return max(self.next_possible_position_fens_dict.values())
