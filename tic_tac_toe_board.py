@@ -39,10 +39,10 @@ class Board:
 
         self.spots_left.remove(move)
 
+        self.update_board(move, symbol)
+        
         if symbol == "X":
             self.update_v_table(move)
-
-        self.update_board(move, symbol)
         
         outcome = self.check_win(symbol)
         
@@ -70,7 +70,16 @@ class Board:
         return outcome
 
     def get_next_move(self, move_style):
-        self.next_possible_position_fens = [self.make_fen_set(spot) for spot in self.spots_left]
+        self.next_possible_position_fens = []
+        
+        for spot in self.spots_left:
+            temp_board = self.board
+            y, x = divmod(spot, 2)
+            
+            temp_board[y][x] = spot
+            
+            self.next_possible_position_fens.append(self.make_fen_set(temp_board))
+    
         self.next_possible_position_fens_dict = {position: Board.v_table.get(position, 0) for position in self.next_possible_position_fens}
 
         if len(self.next_possible_position_fens) == 1:
@@ -93,15 +102,13 @@ class Board:
         else:
             raise ValueError("Invalid move style, must be 'random', 'choose', or 'policy'")
 
-    def make_fen_set(self):
-        
-        boards = []
-        
-        temp_board = self.board
+    @staticmethod
+    def make_fen_set(board):
+        boards = [board]
         
         for _ in range(3):
-            temp_board = np.rot90(temp_board)
-            boards.append(temp_board)
+            board = np.rot90(board)
+            boards.append(board)
             
         
         boards_set = set()
@@ -119,7 +126,7 @@ class Board:
         return frozenset(boards_set)
     
     def update_v_table(self, move):
-        self.last_move_fen_set = self.make_fen_set(move)
+        self.last_move_fen_set = self.make_fen_set(self.board)
         
         Board.v_table[self.last_move_fen_set] = Board.v_table.get(self.last_move_fen_set, 0)
         
