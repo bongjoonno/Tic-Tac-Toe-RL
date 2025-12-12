@@ -1,4 +1,4 @@
-from imports import np, choice, choices
+from imports import np, choice, choices, deepcopy
 
 class Board:
     winning_position_pairs = [[(0, 0), (0, 1), (0, 2)],
@@ -73,7 +73,7 @@ class Board:
         self.next_possible_position_fens = []
         
         for spot in self.spots_left:
-            temp_board = self.board
+            temp_board = deepcopy(self.board)
             y, x = divmod(spot, 3)
             
             temp_board[y][x] = Board.opposite_symbol[self.last_move_player]
