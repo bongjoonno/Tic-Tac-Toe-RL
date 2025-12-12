@@ -7,7 +7,7 @@ epsilon = EPSILON
 
 board = Board(epsilon)
 
-epochs = 10_000
+epochs = 100_000
 
 train_model(epochs)
 play_tic_tac_toe()
