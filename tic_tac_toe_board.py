@@ -74,9 +74,9 @@ class Board:
         
         for spot in self.spots_left:
             temp_board = self.board
-            y, x = divmod(spot, 2)
+            y, x = divmod(spot, 3)
             
-            temp_board[y][x] = spot
+            temp_board[y][x] = Board.opposite_symbol[self.last_move_player]
             
             self.next_possible_position_fens.append(self.make_fen_set(temp_board))
     
